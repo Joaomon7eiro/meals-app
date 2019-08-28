@@ -1,20 +1,35 @@
 import 'package:flutter/material.dart';
 
 import '../models/category.dart';
+import '../models/meal.dart';
 import '../widgets/meal_item.dart';
-import '../dummy-data.dart';
 
-class CategoryMealsPage extends StatelessWidget {
+class CategoryMealsPage extends StatefulWidget {
   static const String routeName = '/category-meals';
+  final List<Meal> meals;
+
+  CategoryMealsPage(this.meals);
+
+  @override
+  _CategoryMealsPageState createState() => _CategoryMealsPageState();
+}
+
+class _CategoryMealsPageState extends State<CategoryMealsPage> {
+  Category category;
+  var categoryMeals;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    category = ModalRoute.of(context).settings.arguments;
+
+    categoryMeals = widget.meals.where((meal) {
+      return meal.categories.contains(category.id);
+    }).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final Category category = ModalRoute.of(context).settings.arguments;
-
-    final categoryMeals = DUMMY_MEALS.where((meal) {
-      return meal.categories.contains(category.id);
-    }).toList();
-
     return Scaffold(
       appBar: AppBar(
         title: Text(category.title),
